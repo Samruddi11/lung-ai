@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lung Nodule Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <form method="POST">
+        <input name="subtlety" placeholder="Subtlety" required>
+        <input name="internal_structure" placeholder="Internal Structure" required>
+        <input name="calcification" placeholder="Calcification" required>
+        <input name="sphericity" placeholder="Sphericity" required>
+        <input name="margin" placeholder="Margin" required>
+        <input name="lobulation" placeholder="Lobulation" required>
+        <input name="spiculation" placeholder="Spiculation" required>
+        <input name="texture" placeholder="Texture" required>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <h3>
+        {% if result %}
+            Result: {{ result }}
+        {% else %}
+            Result will appear here
+        {% endif %}
+    </h3>
+</div>
+
+</body>
+</html>

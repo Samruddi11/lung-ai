@@ -1,10 +1,18 @@
 from flask import Flask, render_template, request
 import numpy as np
 import tensorflow as tf
+import os
 
 app = Flask(__name__)
 
-interpreter = tf.lite.Interpreter(model_path="lung_model_raw.tflite")
+# Load TFLite model
+MODEL_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "lung_model_raw.tflite"
+)
+
+interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
@@ -28,15 +36,28 @@ def home():
 
         input_data = np.array([values], dtype=np.float32)
 
-        interpreter.set_tensor(input_details[0]["index"], input_data)
+        interpreter.set_tensor(
+            input_details[0]["index"],
+            input_data
+        )
+
         interpreter.invoke()
 
-        prediction = interpreter.get_tensor(output_details[0]["index"])
-        score = prediction[0][0]
+        prediction = interpreter.get_tensor(
+            output_details[0]["index"]
+        )
+
+        score = float(prediction[0][0])
 
         result = "Malignant" if score >= 0.5 else "Benign"
 
-    return render_template("index.html", result=result)
+    return render_template(
+        "index.html",
+        result=result
+    )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(
+        host="0.0.0.0",
+        port=5001
+    )
